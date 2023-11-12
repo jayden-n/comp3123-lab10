@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import Form from "./components/Form";
+import SubmittedData from "./components/SubmittedData";
 
 export interface ISubmittedData {
 	email: string;
@@ -23,17 +24,7 @@ function App(): React.ReactElement {
 		<div>
 			<h1>Data Entry Form</h1>
 			<Form onSubmit={handleFormSubmit} />
-			{submittedData && (
-				<div>
-					<h2>Submitted Data:</h2>
-					<p>Email: {submittedData.email}</p>
-					<p>Full Name: {submittedData.fullName}</p>
-					<p>Address: {submittedData.address}</p>
-					<p>City: {submittedData.city}</p>
-					<p>Province: {submittedData.province}</p>
-					<p>Postal Code: {submittedData.postalCode}</p>
-				</div>
-			)}
+			<SubmittedData data={submittedData} />
 		</div>
 	);
 }
