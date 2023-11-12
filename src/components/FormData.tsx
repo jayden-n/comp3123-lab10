@@ -74,7 +74,13 @@ const FormData: FC<IFormDataProps> = ({
 					value={formData.province}
 					onChange={handleChange}
 				>
-					{provinces.map((province, i) => (
+					{/* fix: default has to be disabled */}
+					<option value='' disabled>
+						{provinces[0]}
+					</option>
+
+					{/* fix: starts from index 1 */}
+					{provinces.slice(1).map((province, i) => (
 						<option key={i} value={province}>
 							{province}
 						</option>
