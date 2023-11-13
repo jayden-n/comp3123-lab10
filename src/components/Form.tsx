@@ -27,11 +27,17 @@ const Form: FC<IFormProps> = ({ onSubmit }) => {
 
 		const data: ISubmittedData = Object.fromEntries(fd.entries());
 
+		// check if form is filled in or not...
 		if (isFormValid(data)) {
-			// adding a new property
+			// then... adding a new property
 			data.acquisition = acquisitionChannel;
 			onSubmit(data);
-			setErrorMessage(null); // reset error message if form submission is successful
+
+			// reset error message if form submission is successful
+			setErrorMessage(null);
+
+			// resetting the form
+			(event.target as HTMLFormElement).reset();
 		} else {
 			setErrorMessage("Please fill in all required fields."); // set an error message for the user
 		}
