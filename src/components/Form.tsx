@@ -1,64 +1,46 @@
-import { ChangeEvent, FormEvent, useState, type FC } from "react";
+import { FC, FormEvent, useState } from "react";
 import { ISubmittedData } from "../App";
-import { provinces } from "../utils/helpers/provincesList";
-import FormData from "./FormData";
+import { isFormValid } from "../utils/helpers/validation";
+import InputData from "./InputData";
 
 type IFormProps = {
 	onSubmit: (data: ISubmittedData) => void;
 };
 
 const Form: FC<IFormProps> = ({ onSubmit }) => {
-	const [formData, setFormData] = useState<ISubmittedData>({
-		email: "",
-		fullName: "",
-		address: "",
-		city: "",
-		province: provinces[0],
-		postalCode: "",
-	});
+	// ERROR HANDLING: when user submit nothing...
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-	const handleChange = (
-		// for province dropdown menu type too
-		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-	) => {
-		// pull out the name, value
-		const { name, value } = e.target;
+	// submitting form
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
 
-		setFormData({
-			// (update state objects without directly modifying the original state.)
-			...formData,
-			[name]: value,
+		const fd = new FormData(event.target as HTMLFormElement);
+
+		// fix: such multi "same" value input fields are lost
+		const acquisitionChannel: string[] = [];
+		fd.getAll("acquisition").forEach((value) => {
+			if (typeof value === "string") {
+				acquisitionChannel.push(value);
+			}
 		});
-		// console.log(name);
-	};
 
-	// ERROR HANDLING: IF USER DIDN'T SUBMIT ANYTHING...
-	const isFormValid = () => {
-		// extract the keys (array) of the formData object | treating it as array of keys from "ISubmittedData"
-		const formDataKeys = Object.keys(formData) as (keyof ISubmittedData)[];
+		const data: ISubmittedData = Object.fromEntries(fd.entries());
 
-		// check if all fields have non-empty values
-		return formDataKeys.every((item) => formData[item].trim() !== "");
-	};
-
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		// prevent refreshing
-		e.preventDefault();
-		if (!isFormValid()) {
-			alert("All fields are required. Please fill out the form completely.");
-			// stop passing any data
-			return;
+		if (isFormValid(data)) {
+			// adding a new property
+			data.acquisition = acquisitionChannel;
+			onSubmit(data);
+			setErrorMessage(null); // reset error message if form submission is successful
+		} else {
+			setErrorMessage("Please fill in all required fields."); // set an error message for the user
 		}
-		onSubmit(formData);
 	};
 
 	return (
 		<>
-			<FormData
-				handleChange={handleChange}
-				handleSubmit={handleSubmit}
-				formData={formData}
-			/>
+			<InputData handleSubmit={handleSubmit} />
+			{errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 		</>
 	);
 };

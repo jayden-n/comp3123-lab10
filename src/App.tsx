@@ -4,12 +4,13 @@ import Form from "./components/Form";
 import SubmittedData from "./components/SubmittedData";
 
 export interface ISubmittedData {
-	email: string;
-	fullName: string;
-	address: string;
-	city: string;
-	province: string;
-	postalCode: string;
+	email?: string;
+	fullName?: string;
+	address?: string;
+	city?: string;
+	province?: string;
+	postalCode?: string;
+	acquisition?: string[];
 }
 
 function App(): React.ReactElement {

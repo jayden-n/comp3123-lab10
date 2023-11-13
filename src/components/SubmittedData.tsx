@@ -17,6 +17,8 @@ const SubmittedData: FC<ISubmittedDataProps> = ({ data }) => {
 					<p>City: {data.city}</p>
 					<p>Province: {data.province}</p>
 					<p>Postal Code: {data.postalCode}</p>
+
+					<p>You found us by: {data.acquisition?.join(", ")}</p>
 				</div>
 			)}
 		</>
